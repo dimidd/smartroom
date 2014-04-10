@@ -1,4 +1,5 @@
 import abc
+import copy
 
 '''
 Created on 10/04/2014
@@ -31,10 +32,10 @@ class FlipChair (RoomAction):
     def __init__ (self, k):
         self.index = k
         
-    def apply (self, state):
-        state.seats[self.index] = not state.seats[self.indexk]
+    def apply (self, orig_state):
+	state = copy.deepcopy(orig_state)
+	state.seats[self.index] = not state.seats[self.index]
+	return state;
     
     def path_cost(self, c, state1, state2):
         return c + 1
-    
-        
