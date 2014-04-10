@@ -17,6 +17,7 @@ class RoomAction(object):
     def apply(self, state):
         return
     
+    @abc.abstractmethod
     def path_cost(self, c, state1, state2):
         """Return the cost of a solution path that arrives at state2 from
         state1 via action, assuming cost c to get up to state1. If the problem
