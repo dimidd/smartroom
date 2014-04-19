@@ -34,9 +34,9 @@ class FlipChair (RoomAction):
         self.index = k
         
     def apply (self, orig_state):
-	state = copy.deepcopy(orig_state)
-	state.seats[self.index] = not state.seats[self.index]
-	return state;
+        state = copy.deepcopy(orig_state)
+        state.seats[self.index] = not state.seats[self.index]
+        return state;
     
     def path_cost(self, c, state1, state2):
         return c + 1
