@@ -59,7 +59,7 @@ def read_initial(initial_filename):
 
 # TODO: get input from commandline
 descs_filename = "input2.txt"
-initial_filename = "bounds.txt"
+initial_filename = "initial2.txt"
 descs = read_descriptors(descs_filename)
 initial, bounds = read_initial(initial_filename)
 
