@@ -42,3 +42,29 @@ class FlipChair (RoomAction):
 
     def path_cost(self, c, _state1, _state2):
         return c + 1
+
+
+class PlaceItem (RoomAction):
+    '''
+    Place @param item such that its left corner is at index @param lcorner
+    '''
+    def __init__(self, item, lcorner):
+        self.item = item
+        self.lcorner = lcorner
+
+    def apply(self, orig_state):
+        state = copy.deepcopy(orig_state)
+        i = self.lcorner
+        sz = 0
+
+        while sz < self.item.size():
+            state.seats[i] = True
+            i += 1
+            sz += 1
+        state.bounds[self.lcorner] += 1
+        state.bounds[i] += 1
+
+        return state
+
+    def path_cost(self, c, _state1, _state2):
+        return c + self.item.size()
