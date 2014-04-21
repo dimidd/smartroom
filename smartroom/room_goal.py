@@ -4,9 +4,10 @@ Created on 10/04/2014
 @author: dimid
 '''
 
+
 class GoalVerifier(object):
     '''
-    classdocs
+    Verifies all constraints item requirements are met
     '''
 
     def __init__(self, constraints, item_descriptors):
@@ -29,5 +30,5 @@ class GoalVerifier(object):
         for d in self.descriptors:
             if d.count != self.count_items(state, d.item):
                 return False
-        
-        return True         
+
+        return True
