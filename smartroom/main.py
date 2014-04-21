@@ -40,15 +40,15 @@ def read_initial(initial_filename):
                 splitted = line.replace('\n', '').split(', ')
                 for bool_str in splitted:
                     initial.append('True' == bool_str.replace('|', ''))
-                bounds = [False] * (len (initial) + 1)
-                bounds [0] = bounds [-1] = True
-                for index,bool_str in enumerate(splitted):
+                bounds = [0] * (len(initial) + 1)
+                bounds[0] = bounds[-1] = 1
+                for index, bool_str in enumerate(splitted):
                     if bool_str in ('False', 'True'):
                         continue
                     if '|True' == bool_str:
-                        bounds[index] = True
+                        bounds[index] = 1
                     elif 'True|' == bool_str:
-                        bounds[index+1] = True
+                        bounds[index + 1] = 1
                     else:
                         raise InitialStateInputErr(bool_str)
             return initial, bounds
