@@ -30,9 +30,12 @@ class IsolatedItems(RoomConstraint):
     # TODO: assume we have just 1xN items. How to count arbitrary shapes?
     def count_violations(self, state):
         count = 0
-        seats = state.seats
-        for i in xrange (0, len(seats) - 1):
-            if seats[i] and seats[i+1]:
+        for i, b in enumerate(state.bounds):
+            # both ends of the bounds list are at least 1
+            lim = 2
+            if (i > 0 and i < len(state.bounds) - 1):
+                lim = 1
+            if b > lim:
                 count += 1
 
         return count
