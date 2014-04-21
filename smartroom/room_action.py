@@ -68,3 +68,29 @@ class PlaceItem (RoomAction):
 
     def path_cost(self, c, _state1, _state2):
         return c + self.item.size()
+
+
+class RemoveItem (RoomAction):
+    '''
+    Remove @param item such that it's left corner is at index @param lcorner
+    '''
+    def __init__(self, size, lcorner):
+        self.size = size
+        self.lcorner = lcorner
+
+    def apply(self, orig_state):
+        state = copy.deepcopy(orig_state)
+        i = self.lcorner
+        sz = 0
+        while sz < self.size:
+            state.seats[i] = False
+            sz = i - self.lcorner + 1
+            i += 1
+        if self.lcorner > 0 and self.lcorner < len(state.bounds) - 1:
+            state.bounds[self.lcorner] -= 1
+        if i > 0 and i < len(state.bounds) - 1:
+            state.bounds[i] -= 1
+        return state
+
+    def path_cost(self, c, _state1, _state2):
+        return c + self.size
