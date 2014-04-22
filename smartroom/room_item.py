@@ -12,6 +12,9 @@ class ItemDescriptor(object):
         self.item = item
         self.count = count
 
+    def __repr__(self):
+        return '(IT:' + repr(self.item) + ', CO:' + str(self.count) + ')'
+
 
 class RoomItem(object):
     __metaclass__ = ABCMeta
@@ -36,4 +39,10 @@ class Bench(RoomItem):
         self.n_seats = n_seats
 
     def binary(self):
-        return [[True] * self.ns_seats]   
+        return [[True] * self.n_seats]
+
+    def __repr__(self):
+        return self.__class__.__name__ + '(' + str(self.n_seats) + ')'
+
+    def size(self):
+        return self.n_seats
