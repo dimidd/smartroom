@@ -19,10 +19,19 @@ class RoomState(object):
     def __init__(self, seats, bounds):
         self.seats = seats
         self.bounds = bounds
-  
+
     def size(self):
         return len(self.seats)
 
     def __str__(self):
-        return str(self.seats)
-  
+        res = ''
+        if self.bounds[0] > 0:
+                res += '|' * self.bounds[0]
+                res += ' '
+        for i, v in enumerate(self.seats):
+            res += str(v)
+            res += ' '
+            if self.bounds[i + 1] > 0:
+                res += '|' * self.bounds[i + 1]
+                res += ' '
+        return res
