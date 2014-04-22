@@ -79,3 +79,16 @@ class RoomState(object):
 
     def __ne__(self, other):
         return self.__eq__(other)
+
+if __name__ == '__main__':
+    seats = [False, True, True, False, False]
+    bounds = [True, True, False, True, False, True]
+    s1 = RoomState(seats, bounds)
+    descs = [ItemDescriptor(Bench(2), 2)]
+    verf = GoalVerifier([], descs)
+    spaces, shapes, unsatisfied = s1.analyze(verf)
+
+    print 'state:', s1
+    print 'spaces:', spaces
+    print 'shapes:', shapes
+    print 'unsatisfied', unsatisfied
