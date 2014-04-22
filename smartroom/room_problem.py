@@ -5,7 +5,8 @@ Created on 10/04/2014
 '''
 
 from aima.search import Problem
-from room_action import FlipChair
+from smartroom.room_action import RemoveItem, PlaceItem
+
 
 class RoomProblem(Problem):
     '''
@@ -24,10 +25,19 @@ class RoomProblem(Problem):
         state. The result would typically be a list, but if there are
         many actions, consider yielding them one at a time in an
         iterator, rather than building them all at once."""
-        actions=[]
-        for i in xrange(state.size()):
-            actions.append(FlipChair(i))
-            
+        actions = []
+
+        spaces, shapes, unsatisfied = state.analyze(self.goalverf)
+        for shp in shapes:
+            actions.append(RemoveItem(shp.size, shp.lcorner))
+
+        # TODO: make this more efficient
+        for spc in spaces:
+            for dsc in unsatisfied:
+                if spc.size >= dsc.item.size():
+                    actions.append(PlaceItem(dsc.item, spc.lcorner))
+
+        # TODO: add MoveItem actions
         return actions
 
     def result(self, state, action):
@@ -50,16 +60,17 @@ class RoomProblem(Problem):
         and action. The default method costs 1 for every step in the path."""
         return action.path_cost(c, state1, state2)
 
-    def value(self, state):
+    def value(self, _state):
         """For optimization problems, each state has a value.  Hill-climbing
         and related algorithms try to maximize this value."""
         return None
-    
+
     def h(self, node):
         ''' Heuristic: use number of remaining items to be positioned '''
         remaining = 0
-        state = node.state        
-        for desc in self.goalverf.descriptors:
-            remaining += desc.count - self.goalverf.count_items(state, desc.item)            
-        
+        state = node.state
+        _spaces, _shapes, unsatisfied = state.analyze(self.goalverf)
+        for desc in unsatisfied:
+            remaining += desc.count
+
         return  remaining
