@@ -37,25 +37,23 @@ def read_initial(initial_filename):
     with open(initial_filename) as initial_file:
         try:
             for line in initial_file:
-                splitted = line.replace('\n', '').split(', ')
+                splitted = line.replace('\n', '').split(' ')
+                prev_str = ''
                 for bool_str in splitted:
-                    initial.append('True' == bool_str.replace('|', ''))
-                bounds = [0] * (len(initial) + 1)
-                bounds[0] = bounds[-1] = 1
-                for index, bool_str in enumerate(splitted):
-                    if bool_str in ('False', 'True'):
-                        continue
-                    if '|True' == bool_str:
-                        bounds[index] = 1
-                    elif 'True|' == bool_str:
-                        bounds[index + 1] = 1
+                    if bool_str in ('|', '||'):
+                        bounds.append(len(bool_str))
+                    elif bool_str in ('False', 'True'):
+                        initial.append('True' == bool_str)
+                        if prev_str in ('False', 'True'):
+                            bounds.append(0)
                     else:
                         raise InitialStateInputErr(bool_str)
+                    prev_str = bool_str
+
             return initial, bounds
 
         except Exception as e:
             print e
-
 
 # TODO: get input from commandline
 descs_filename = "input2.txt"
