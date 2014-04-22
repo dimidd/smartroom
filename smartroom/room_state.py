@@ -71,3 +71,11 @@ class RoomState(object):
                     unsatisfied[item_sizes[sz]].count -= 1
 
         return spaces, shapes, unsatisfied
+
+    def __eq__(self, other):
+        if not (isinstance(other, RoomState)):
+            return False
+        return self.seats == other.seats and self.bounds == other.bounds
+
+    def __ne__(self, other):
+        return self.__eq__(other)
