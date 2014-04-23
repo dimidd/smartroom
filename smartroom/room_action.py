@@ -86,10 +86,8 @@ class RemoveItem (RoomAction):
             state.seats[i] = False
             sz = i - self.lcorner + 1
             i += 1
-        if self.lcorner > 0 and self.lcorner < len(state.bounds) - 1:
-            state.bounds[self.lcorner] -= 1
-        if i > 0 and i < len(state.bounds) - 1:
-            state.bounds[i] -= 1
+        state.bounds[self.lcorner] -= 1
+        state.bounds[i] -= 1
         return state
 
     def path_cost(self, c, _state1, _state2):
