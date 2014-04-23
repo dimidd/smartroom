@@ -56,8 +56,8 @@ def read_initial(initial_filename):
             print e
 
 # TODO: get input from commandline
-descs_filename = "input2.txt"
-initial_filename = "initial2.txt"
+descs_filename = "input15tight.txt"
+initial_filename = "initial15.txt"
 descs = read_descriptors(descs_filename)
 initial, bounds = read_initial(initial_filename)
 
