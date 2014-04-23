@@ -32,8 +32,9 @@ class RoomProblem(Problem):
             actions.append(RemoveItem(shp.size, shp.lcorner))
 
         # TODO: make this more efficient
+        dscs = [dsc for dsc in unsatisfied if dsc.count > 0]
         for spc in spaces:
-            for dsc in unsatisfied:
+            for dsc in dscs:
                 if spc.size >= dsc.item.size():
                     actions.append(PlaceItem(dsc.item, spc.lcorner))
 
