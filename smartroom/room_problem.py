@@ -72,6 +72,7 @@ class RoomProblem(Problem):
         state = node.state
         _spaces, _shapes, unsatisfied = state.analyze(self.goalverf)
         for desc in unsatisfied:
-            remaining += desc.count
+            if desc.count > 0:
+                remaining += desc.count * desc.item.size()
 
         return  remaining
