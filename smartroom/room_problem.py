@@ -6,6 +6,7 @@ Created on 10/04/2014
 
 from aima.search import Problem
 from smartroom.room_action import RemoveItem, PlaceItem
+from smartroom.room_constraint import IsolatedItems
 
 
 class RoomProblem(Problem):
@@ -13,18 +14,18 @@ class RoomProblem(Problem):
     Room search problem.
     '''
 
-    def __init__(self, initial, goal_verifier):
-        """The constructor specifies the initial state, and possibly a goal
-        state, if there is a unique goal.  Your subclass's constructor can add
-        other arguments."""
-        self.initial = initial
-        self.goalverf = goal_verifier
+    def isolt_cond(self, state, lcorner, item_sz):
+        """Return whether an item of size @sz in @lcorner"""
+        if lcorner >= 0 and state.seats[lcorner - 1]:
+            return False
+        rcorner = lcorner + item_sz - 1
+        if  rcorner + 1 < state.size() and  state.seats[rcorner + 1]:
+            return False
 
-    def actions(self, state):
-        """Return the actions that can be executed in the given
-        state. The result would typically be a list, but if there are
-        many actions, consider yielding them one at a time in an
-        iterator, rather than building them all at once."""
+        return True
+
+    def isolt_actions(self, state):
+        """Return actions for isolated items"""
         actions = []
 
         spaces, shapes, unsatisfied = state.analyze(self.goalverf)
@@ -35,11 +36,30 @@ class RoomProblem(Problem):
         dscs = [dsc for dsc in unsatisfied if dsc.count > 0]
         for spc in spaces:
             for dsc in dscs:
-                if spc.size >= dsc.item.size():
+                if spc.size >= dsc.item.size() and self.isolt_cond(state, spc.lcorner, dsc.item.size()):
                     actions.append(PlaceItem(dsc.item, spc.lcorner))
 
         # TODO: add MoveItem actions
         return actions
+
+    def __init__(self, initial, goalverf):
+        """The constructor specifies the initial state, and possibly a goal
+        state, if there is a unique goal.  Your subclass's constructor can add
+        other arguments."""
+        self.initial = initial
+        self.goalverf = goalverf
+        if any(isinstance(x, IsolatedItems) for x in goalverf.constarints):
+            self.actions_gen = self.isolt_actions
+        else:
+            self.actions_gen = self.isolt_actions  # TODO: use packing
+
+    def actions(self, state):
+        """Return the actions that can be executed in the given
+        state. The result would typically be a list, but if there are
+        many actions, consider yielding them one at a time in an
+        iterator, rather than building them all at once."""
+
+        return self.actions_gen(state)
 
     def result(self, state, action):
         """Return the state that results from executing the given
