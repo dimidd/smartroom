@@ -61,8 +61,6 @@ class PlaceItem (RoomAction):
             state.seats[i] = True
             i += 1
             sz += 1
-        state.bounds[self.lcorner] += 1
-        state.bounds[i] += 1
 
         return state
 
@@ -86,8 +84,7 @@ class RemoveItem (RoomAction):
             state.seats[i] = False
             sz = i - self.lcorner + 1
             i += 1
-        state.bounds[self.lcorner] -= 1
-        state.bounds[i] -= 1
+
         return state
 
     def path_cost(self, c, _state1, _state2):

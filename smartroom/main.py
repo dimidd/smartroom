@@ -32,36 +32,29 @@ def read_descriptors(descs_filename):
 
 def read_initial(initial_filename):
     initial = []
-    bounds = []
     # TODO: support also 0,1 instead of True,False
     with open(initial_filename) as initial_file:
         try:
             for line in initial_file:
-                splitted = line.replace('\n', '').split(' ')
-                prev_str = ''
+                splitted = line.split()
                 for bool_str in splitted:
-                    if bool_str in ('|', '||'):
-                        bounds.append(len(bool_str))
-                    elif bool_str in ('False', 'True'):
+                    if bool_str in ('False', 'True'):
                         initial.append('True' == bool_str)
-                        if prev_str in ('False', 'True'):
-                            bounds.append(0)
                     else:
                         raise InitialStateInputErr(bool_str)
-                    prev_str = bool_str
 
-            return initial, bounds
+            return initial
 
         except Exception as e:
             print e
 
 # TODO: get input from commandline
 descs_filename = "input15tight.txt"
-initial_filename = "initial15.txt"
+initial_filename = "initnb15.txt"
 descs = read_descriptors(descs_filename)
-initial, bounds = read_initial(initial_filename)
+initial = read_initial(initial_filename)
 
-initial_state = RoomState(initial, bounds)
+initial_state = RoomState(initial)
 verf_nocst = GoalVerifier([], descs)
 verf_isolt = GoalVerifier([IsolatedItems()], descs)
 problem = RoomProblem(initial_state, verf_isolt)

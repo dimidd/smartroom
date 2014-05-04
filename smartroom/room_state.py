@@ -16,24 +16,17 @@ class Segment:
 
 
 class RoomState(object):
-    def __init__(self, seats, bounds):
+    def __init__(self, seats):
         self.seats = seats
-        self.bounds = bounds
 
     def size(self):
         return len(self.seats)
 
     def __str__(self):
         res = ''
-        if self.bounds[0] > 0:
-                res += '|' * self.bounds[0]
-                res += ' '
         for i, v in enumerate(self.seats):
             res += str(v)
             res += ' '
-            if self.bounds[i + 1] > 0:
-                res += '|' * self.bounds[i + 1]
-                res += ' '
         return res
 
     #TODO: save this in state, rather than recomputing?
@@ -42,7 +35,6 @@ class RoomState(object):
         shapes = []
         unsatisfied = copy.deepcopy(verf.descriptors)
         seats = self.seats
-        bounds = self.bounds
         item_sizes = dict()
         for i, desc in enumerate(unsatisfied):
             sz = desc.item.size()
@@ -62,8 +54,7 @@ class RoomState(object):
             else:
                 # TODO: check consistency
                 lcorner = i
-                i = i + 1
-                while i < len(seats) and 0 == bounds[i]:
+                while i < len(seats) and seats[i]:
                     i += 1
                 sz = i - lcorner
                 shapes.append(Segment(lcorner, sz))
@@ -75,15 +66,14 @@ class RoomState(object):
     def __eq__(self, other):
         if not (isinstance(other, RoomState)):
             return False
-        return self.seats == other.seats and self.bounds == other.bounds
+        return self.seats == other.seats
 
     def __ne__(self, other):
         return self.__eq__(other)
 
 if __name__ == '__main__':
     seats = [False, True, True, False, False]
-    bounds = [True, True, False, True, False, True]
-    s1 = RoomState(seats, bounds)
+    s1 = RoomState(seats)
     descs = [ItemDescriptor(Bench(2), 2)]
     verf = GoalVerifier([], descs)
     spaces, shapes, unsatisfied = s1.analyze(verf)
