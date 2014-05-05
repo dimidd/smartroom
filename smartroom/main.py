@@ -2,7 +2,7 @@ from aima.search import astar_search as astar
 from smartroom.room_state import RoomState
 from smartroom.room_goal import GoalVerifier
 from smartroom.room_problem import RoomProblem
-from smartroom.room_constraint import IsolatedItems
+from smartroom.room_constraint import IsolatedItems, FacingItems
 from smartroom.room_item import *
 
 
@@ -49,14 +49,15 @@ def read_initial(initial_filename):
             print e
 
 # TODO: get input from commandline
-descs_filename = "input15tight.txt"
-initial_filename = "initnb15.txt"
+descs_filename = "input7.txt"
+initial_filename = "initnb7_2d.txt"
 descs = read_descriptors(descs_filename)
 initial = read_initial(initial_filename)
 
 initial_state = RoomState(initial)
 verf_nocst = GoalVerifier([], descs)
-verf_isolt = GoalVerifier([IsolatedItems()], descs)
+verf_isolt = GoalVerifier([IsolatedItems(), FacingItems(1, 3, None)], descs)
+verf_isolt.constarints[1].verf = verf_isolt
 problem = RoomProblem(initial_state, verf_isolt)
 sol = astar(problem)
 for s in sol.path():
