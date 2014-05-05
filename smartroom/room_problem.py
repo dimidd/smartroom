@@ -9,34 +9,36 @@ from smartroom.room_action import RemoveItem, PlaceItem
 from smartroom.room_constraint import IsolatedItems
 
 
+def isol_cond(state, lcorner, item_sz):
+    """Return whether an item of size @sz in @lcorner"""
+    if lcorner[1] > 0 and state.seats[lcorner[0]][lcorner[1] - 1]:
+        return False
+    rcorner = lcorner[0], lcorner[1] + item_sz - 1
+    if  rcorner[1] + 1 < state.size() and  state.seats[rcorner[1] + 1]:
+        return False
+
+    return True
+
+
 class RoomProblem(Problem):
     '''
     Room search problem.
     '''
 
-    def isolt_cond(self, state, lcorner, item_sz):
-        """Return whether an item of size @sz in @lcorner"""
-        if lcorner >= 0 and state.seats[lcorner - 1]:
-            return False
-        rcorner = lcorner + item_sz - 1
-        if  rcorner + 1 < state.size() and  state.seats[rcorner + 1]:
-            return False
-
-        return True
-
-    def isolt_actions(self, state):
+    def isol_actions(self, state):
         """Return actions for isolated items"""
         actions = []
 
         spaces, shapes, unsatisfied = state.analyze(self.goalverf)
         for shp in shapes:
-            actions.append(RemoveItem(shp.size, shp.lcorner))
+            actions.append(RemoveItem(shp.sz, shp.lcorner))
 
         # TODO: make this more efficient
         dscs = [dsc for dsc in unsatisfied if dsc.count > 0]
         for spc in spaces:
             for dsc in dscs:
-                if spc.size >= dsc.item.size() and self.isolt_cond(state, spc.lcorner, dsc.item.size()):
+                it_sz = dsc.item.size()
+                if spc.size >= it_sz and isol_cond(state, spc.lcorner, it_sz):
                     actions.append(PlaceItem(dsc.item, spc.lcorner))
 
         # TODO: add MoveItem actions
@@ -49,9 +51,9 @@ class RoomProblem(Problem):
         self.initial = initial
         self.goalverf = goalverf
         if any(isinstance(x, IsolatedItems) for x in goalverf.constarints):
-            self.actions_gen = self.isolt_actions
+            self.actions_gen = self.isol_actions
         else:
-            self.actions_gen = self.isolt_actions  # TODO: use packing
+            self.actions_gen = self.isol_actions  # TODO: use packing
 
     def actions(self, state):
         """Return the actions that can be executed in the given

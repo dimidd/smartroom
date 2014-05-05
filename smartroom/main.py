@@ -35,13 +35,15 @@ def read_initial(initial_filename):
     # TODO: support also 0,1 instead of True,False
     with open(initial_filename) as initial_file:
         try:
-            for line in initial_file:
+            for i_line, line in enumerate(initial_file):
                 splitted = line.split()
+                row = []
                 for bool_str in splitted:
                     if bool_str in ('False', 'True'):
-                        initial.append('True' == bool_str)
+                        row.append('True' == bool_str)
                     else:
                         raise InitialStateInputErr(bool_str)
+                initial.append(row)
 
             return initial
 

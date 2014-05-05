@@ -54,12 +54,12 @@ class PlaceItem (RoomAction):
 
     def apply(self, orig_state):
         state = copy.deepcopy(orig_state)
-        i = self.lcorner
+        row, col = self.lcorner
         sz = 0
 
         while sz < self.item.size():
-            state.seats[i] = True
-            i += 1
+            state.seats[row][col] = True
+            col += 1
             sz += 1
 
         return state
@@ -78,12 +78,12 @@ class RemoveItem (RoomAction):
 
     def apply(self, orig_state):
         state = copy.deepcopy(orig_state)
-        i = self.lcorner
+        row, col = self.lcorner
         sz = 0
         while sz < self.size:
-            state.seats[i] = False
-            sz = i - self.lcorner + 1
-            i += 1
+            state.seats[row][col] = False
+            sz = col - self.lcorner[1] + 1
+            col += 1
 
         return state
 

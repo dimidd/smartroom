@@ -24,9 +24,11 @@ class RoomState(object):
 
     def __str__(self):
         res = ''
-        for i, v in enumerate(self.seats):
-            res += str(v)
-            res += ' '
+        for row in self.seats:
+            for col in row:
+                res += str(col)
+                res += ' '
+            res += '\n'
         return res
 
     #TODO: save this in state, rather than recomputing?
@@ -40,26 +42,28 @@ class RoomState(object):
             sz = desc.item.size()
             item_sizes[sz] = i
 
-        i = 0
-        while i < len(seats):
-            if not seats[i]:
-                cur_spaces = []
-                while i < len(seats) and not seats[i]:
-                    cur_spaces.append(Segment(i, -1))
-                    i += 1
-                for seg in cur_spaces:
-                    seg.size = i - seg.lcorner
-                spaces.extend(cur_spaces)
+        len_row = len(seats[0])
+        for i_row in xrange(len(seats)):
+            i_col = 0
+            while i_col < len_row:
+                if not seats[i_row][i_col]:
+                    cur_spaces = []
+                    while i_col < len_row and not seats[i_row][i_col]:
+                        cur_spaces.append(Segment((i_row, i_col), -1))
+                        i_col += 1
+                    for seg in cur_spaces:
+                        seg.size = i_col - seg.lcorner[1]
+                    spaces.extend(cur_spaces)
 
-            else:
-                # TODO: check consistency
-                lcorner = i
-                while i < len(seats) and seats[i]:
-                    i += 1
-                sz = i - lcorner
-                shapes.append(Segment(lcorner, sz))
-                if sz in item_sizes:
-                    unsatisfied[item_sizes[sz]].count -= 1
+                else:
+                    # TODO: check consistency
+                    lcorner = i_row, i_col
+                    while i_col < len_row and seats[i_row][i_col]:
+                        i_col += 1
+                    sz = i_col - lcorner[1]
+                    shapes.append(Segment(lcorner, sz))
+                    if sz in item_sizes:
+                        unsatisfied[item_sizes[sz]].count -= 1
 
         return spaces, shapes, unsatisfied
 
@@ -72,13 +76,13 @@ class RoomState(object):
         return self.__eq__(other)
 
 if __name__ == '__main__':
-    seats = [False, True, True, False, False]
+    seats = [[False, True, True, False, False], [False, False, False, False, False]]
     s1 = RoomState(seats)
     descs = [ItemDescriptor(Bench(2), 2)]
     verf = GoalVerifier([], descs)
     spaces, shapes, unsatisfied = s1.analyze(verf)
 
-    print 'state:', s1
+    print 'state:\n', s1
     print 'spaces:', spaces
     print 'shapes:', shapes
     print 'unsatisfied', unsatisfied

@@ -28,7 +28,7 @@ class NullConstraint(RoomConstraint):
 
 class IsolatedItems(RoomConstraint):
     # TODO: assume we have just 1xN items. How to count arbitrary shapes?
-    def count_violations(self, state):
+    def count_violations(self, _state):
         # all states are now guaranteed to be isolated by PlaceItem
         return 0
 
