@@ -3,7 +3,7 @@ from smartroom.room_state import RoomState
 from smartroom.room_goal import GoalVerifier
 from smartroom.room_problem import RoomProblem
 from smartroom.room_constraint import IsolatedItems, FacingItems
-from smartroom.room_item import *
+from smartroom.room_item import ItemDescriptor, Bench
 
 
 class InitialStateInputErr (Exception):
@@ -35,7 +35,7 @@ def read_initial(initial_filename):
     # TODO: support also 0,1 instead of True,False
     with open(initial_filename) as initial_file:
         try:
-            for i_line, line in enumerate(initial_file):
+            for line in initial_file:
                 splitted = line.split()
                 row = []
                 for bool_str in splitted:
